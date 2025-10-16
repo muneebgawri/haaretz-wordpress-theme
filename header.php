@@ -27,6 +27,10 @@
                         <li><a href="#">هآرتس بالعربي</a></li>
                     </ul>
                 </nav>
+                <div class="header-top-actions">
+                    <a href="#" class="login-link">LOG IN</a>
+                    <a href="#" class="subscribe-link">SUBSCRIBE NOW</a>
+                </div>
             </div>
         </div>
         
