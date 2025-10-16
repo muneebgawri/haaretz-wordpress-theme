@@ -99,12 +99,15 @@ add_action('wp_enqueue_scripts', 'haaretz_scripts');
  */
 function haaretz_fallback_menu() {
     echo '<ul id="primary-menu" class="menu">';
-    echo '<li><a href="' . esc_url(home_url('/')) . '">Home</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/news/')) . '">News</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/')) . '">Daily Brief</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/israel-news/')) . '">Israel News</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/us-news/')) . '">U.S. News</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/middle-east/')) . '">Middle East</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/jewish-world/')) . '">Jewish World</a></li>';
     echo '<li><a href="' . esc_url(home_url('/opinion/')) . '">Opinion</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/culture/')) . '">Culture</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/sports/')) . '">Sports</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/about/')) . '">About</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/security-cyber/')) . '">Security & Cyber</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/archaeology/')) . '">Archaeology</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/podcast/')) . '">Podcast</a></li>';
     echo '</ul>';
 }
 

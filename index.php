@@ -47,7 +47,7 @@ get_header(); ?>
 
             <!-- Breaking News Section -->
             <section class="breaking-news">
-                <h2>Breaking News</h2>
+                <h2>Israel-Hamas Cease-fire</h2>
                 <ul>
                     <?php
                     $breaking_query = new WP_Query(array(
@@ -66,7 +66,13 @@ get_header(); ?>
                             <li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
                         <?php endwhile;
                         wp_reset_postdata();
-                    endif; ?>
+                    else : ?>
+                        <li><a href="#">Bodies of Two Hostages Arrive in Israel From Gaza, on Way to Forensic Identification</a></li>
+                        <li><a href="#">Trump's Middle East Visions Face a Long Road to Reality</a></li>
+                        <li><a href="#">'Fortunate to Embrace Our Loved Ones' | Families of Freed Israeli Hostages Ready Themselves for Journey to Recovery</a></li>
+                        <li><a href="#">Thousands Attend Funeral of Daniel Peretz, Whose Body Was Returned From Gaza</a></li>
+                        <li><a href="#">'You Are a Hero!' Relatives of Slain Nepali Hostage Grieve His Death in Hamas Captivity</a></li>
+                    <?php endif; ?>
                 </ul>
             </section>
 
