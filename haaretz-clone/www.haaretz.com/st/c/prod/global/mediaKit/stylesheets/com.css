@@ -1,0 +1,16 @@
+@charset "UTF-8";
+@font-face{
+	font-family:"htzIcons";
+	src:url(https://www.haaretz.com/st/c/prod/global/mediaKit/stylesheets/fonts/htzIcons.eot);
+	src:url("../../../resources/fonts/icons/htzIcons.eot@") format("embedded-opentype"),
+	url("../../../resources/fonts/icons/htzIcons.woff") format("woff"),
+	url("../../../resources/fonts/icons/htzIcons.ttf") format("truetype"),
+	url("../../../resources/fonts/icons/htzIcons.svg") format("svg")
+}
+@media screen and (-webkit-min-device-pixel-ratio: 0){
+	@font-face{
+		font-family:"htzIcons";
+		src:url("../../../resources/fonts/icons/htzIcons.svg") format("svg")
+	}
+}
+

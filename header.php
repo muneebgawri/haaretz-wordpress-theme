@@ -45,6 +45,9 @@
                                 haaretz
                             </a>
                         </h1>
+                        <div class="site-tagline">
+                            Israel News, the Middle East and the Jewish World
+                        </div>
                     <?php endif; ?>
                 </div>
 

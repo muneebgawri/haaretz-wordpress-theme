@@ -1,0 +1,3 @@
+date	size'/'remotesize	flags(request:Update,Range state:File response:Modified,Chunked,gZipped)	statuscode	status ('servermsg')	MIME	Etag|Date	URL	localfile	(from URL)
+05:15:23	2747/2747	---M--	200	added ('OK')	text/html	date:Thu,%2016%20Oct%202025%2000:15:23%20GMT	https://www.haaretz.com/robots.txt		(from )
+05:15:24	828367/828367	---M-Z	200	added ('OK')	text/html	date:Thu,%2016%20Oct%202025%2000:15:23%20GMT	https://www.haaretz.com/	/Users/apple/Downloads/business-newswire/haaretz-clone/www.haaretz.com/index.html	(from )

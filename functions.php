@@ -102,12 +102,15 @@ function haaretz_fallback_menu() {
     echo '<li><a href="' . esc_url(home_url('/')) . '">Daily Brief</a></li>';
     echo '<li><a href="' . esc_url(home_url('/israel-news/')) . '">Israel News</a></li>';
     echo '<li><a href="' . esc_url(home_url('/us-news/')) . '">U.S. News</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/middle-east/')) . '">Middle East</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/jewish-world/')) . '">Jewish World</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/middle-east-news/')) . '">Middle East News</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/jewish/')) . '">Jewish World</a></li>';
     echo '<li><a href="' . esc_url(home_url('/opinion/')) . '">Opinion</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/security-cyber/')) . '">Security & Cyber</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/security-aviation/')) . '">Security & Cyber</a></li>';
     echo '<li><a href="' . esc_url(home_url('/archaeology/')) . '">Archaeology</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/podcast/')) . '">Podcast</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/podcasts/')) . '">Podcast</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/haaretz-today/')) . '">Haaretz Today</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/newsletters/')) . '">Newsletters</a></li>';
+    echo '<li><a href="https://www.haaretz.co.il/debate">هآرتس بالعربي</a></li>';
     echo '</ul>';
 }
 

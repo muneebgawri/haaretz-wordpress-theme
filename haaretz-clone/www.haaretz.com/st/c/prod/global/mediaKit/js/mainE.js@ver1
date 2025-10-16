@@ -1,0 +1,935 @@
+// -------------------------------------------------------------
+//
+//  Interactive Engine V3.0 (2015)
+//
+// -------------------------------------------------------------
+var reg;
+var isPlay = false;
+var strOption = "";
+var strGroup = "";
+var contentStatus = false;
+var objMedia ={};
+var arr =[];
+var objSubMenu =[];
+var strMainMenu ="";
+var $menu;
+var player;
+var siteCheck;
+var $DataHeb;
+var tabKey;
+var closeMouseOver = true;
+var contactCheackH;
+var contactCheackE;
+var langStatus = "heb";
+var defaults = {
+    loc: "media",
+			bundleUrl: "//" + document.domain + "/st/c/work/bundle/4/3/",
+			staticUrl: "//" + document.domain + "/st/c/static/eng/2015/maps/settlements/"
+
+    },
+
+settings = {
+    dataFiles: [
+
+	  'eng'
+
+    ],
+    jsCommons: [
+        "interdfp/inter-dfp.min.js",
+        "scrollease/scrollease.min.js",
+        "smartresize/smartresize.js",
+        "xl/xl.min.300415.js",
+        "buggyfill/buggyfill.js"
+    ]
+},
+
+switches = {
+
+};
+
+var helloObj = new interEngine(defaults,settings,switches);
+helloObj.init();
+
+function videoReady() {
+
+}
+
+$(document).ready(function(){
+	var currentID = $('.inter-video-mask').attr('id');
+
+	$('#'+currentID).parent().addClass('fakeyoutubebg').css("background-image","url('//www.haaretz.co.il/st/c/static/global/media/img/hEngN.jpg')")
+
+
+	var youtubelogo = document.createElement("img");
+	youtubelogo.src = '//www.haaretz.co.il/st/c/static/resources/img/items/logo-youtube.png';
+	youtubelogo.setAttribute('class','youtubeLogo');
+	$('.inter-video-mask').append(youtubelogo);
+
+	var tempButton = document.createElement("img");
+	tempButton.src = '//www.haaretz.co.il/st/c/static/resources/img/items/youtubeplay.png';
+	tempButton.setAttribute('class','youtubeplayButton');
+	tempButton.id = 'butt' + currentID;
+	$('.inter-video-mask').append(tempButton);
+
+	var $youtubeLink = "https://www.youtube.com/embed/" + currentID;
+	var $mobileYoutubeLink = "//m.youtube.com/watch?v=" + currentID;
+//var tempEmbedStr = '<iframe src="https://www.youtube.com/embed/' + currentID +'?playlist=' + currentID +'&controls=0&autoplay=0&wmode=transparent&loop=0&modestbranding=1&rel=0&showinfo=0" frameborder="0" allowfullscreen></iframe>'
+	var tempEmbedStr = '<iframe src="' + $youtubeLink + '" frameborder="0"></iframe>'
+
+	$('#'+tempButton.id).on('click',function(){
+		isPlay = true;
+		$('#' + currentID).html(tempEmbedStr);
+		inter_players[currentID] = new YT.Player(currentID, {
+			videoId: currentID,
+			events: {
+				'onReady': onPlayerReady
+			}
+		});
+	})
+
+
+	function onPlayerReady(e){
+		console.log(e);
+		e.target.playVideo();
+
+	}
+});
+
+
+
+helloObj.func.projReady = function() {
+
+	$('.inter-mc').show();
+	$DataHeb = helloObj.data.eng;
+	$( "#menu" ).slideDown(600);
+
+	createMainMenuObj();
+	//initGroupMenu();
+	initMenu();
+
+
+}
+// -------------------------------------------------------------
+//     Init the main Obj menu
+// -------------------------------------------------------------
+
+	function createMainMenuObj() {
+		objMedia.mainProduct = [];
+		for (i = 0; i < $DataHeb["product"].length; i++) {
+			objMedia.mainProduct[i] = $DataHeb['product'][i].menu
+		}
+
+	}
+
+// -------------------------------------------------------------
+//     Init the content Obj
+// -------------------------------------------------------------
+	function CreateContentObj() {
+		var key = "pro3";
+		for (i = 0; i < $DataHeb[key].length; i++) {
+			objSubMenu.push = {name: $DataHeb[key][i].name};
+		}
+	}
+
+// -------------------------------------------------------------
+//     Init group menu
+// -------------------------------------------------------------
+
+function initGroupMenu() {
+
+	strGroup ="<div class='product-box-group' data-menugroup='group'><div class='text-prod-group active-main-menu'>הקדמה</div></div>" +
+	          "<div class='product-box-group' data-menugroup='heb'><div class='text-prod-group'>הארץ</div></div>" +
+			  "<div class='product-box-group' data-menugroup='mar'><div class='text-prod-group'>TheMarher</div></div>" +
+			  "<div class='product-box-group' data-menugroup='eng'><div class='text-prod-group'>Haaretz.Com</div></div>" +
+			  "<div class='product-box-group' data-menugroup='fin'><div class='text-prod-group'>finance</div></div>";
+
+
+	$("#products-group").html(strGroup);
+}
+
+// -------------------------------------------------------------
+//     Init the main menu
+// -------------------------------------------------------------
+
+	function initMenu() {
+
+		for (i = 0; i < $DataHeb["product"].length; i++) {
+			if (i == 0) {
+				strMainMenu += "<div class='product-box' data-menu=" + i + ">" +
+						"<div class='text-prod active-main-menu' aria-label='" + $DataHeb['product'][i].menu + "'>" + $DataHeb['product'][i].menu + "</div></div>";
+				//createMainMenuObj($DataHeb['product'][i].menu, i);
+			}
+			else {
+				strMainMenu += "<div class='product-box' data-menu=" + i + ">" +
+						"<div class='text-prod' aria-label='" + $DataHeb['product'][i].menu + "'>" + $DataHeb['product'][i].menu + "</div>" +
+						"<div class='icon-prod'><button class='eng'>}</button></div></div>";
+				//createMainMenuObj($DataHeb['product'][i].menu, i);
+				//objMedia.mainProduct[i] = $mediaData['product'][i].menu;
+			}
+		}
+		$("#products").html(strMainMenu);
+		strMainMenu = "";
+
+
+		$menu = $("#products");
+
+		$menu.menuAim({
+			activate: activateSubmenu,
+			deactivate: deactivateSubmenu,
+			submenuDirection: "left"
+		});
+
+		function activateSubmenu(row) {
+			var $row = $(row);
+			var $submenu = $row.find('.option-box');
+			console.log("$row" , $row);
+			$submenu.css({
+				display: "block"
+			});
+
+		}
+
+		function deactivateSubmenu(row) {
+			var $row = $(row),
+					$submenu = $row.find('.option-box');
+
+			// Hide the submenu and remove the row's highlighted look
+			$submenu.css({
+				display: "none"
+			});
+
+			//$row.removeClass("maintainHover");
+		}
+
+		$("#products .product-box").click(function(e) {
+			e.stopPropagation();
+		});
+
+
+
+
+
+		/*for (key in $DataHeb) {
+		 if (key != "product") {
+		 for (var i = 0; i < $DataHeb[key].length; i++) {
+		 objSubMenu.name = $DataHeb[key][i].name;
+		 objSubMenu.title = $DataHeb[key][i].title;
+		 objSubMenu.details = $DataHeb[key][i].details;
+		 objSubMenu.size = $DataHeb[key][i].size;
+		 objSubMenu.img = $DataHeb[key][i].img;
+		 }
+		 }
+		 }*/
+	}
+
+
+//--------------------------------------------------------------//
+//  show group menu
+//--------------------------------------------------------------//
+
+/*
+$(document).on("click", ".product-box-group", function (e) {
+
+	var opt_index_group = $(this).attr('data-menugroup');
+	var box_index_group = $(this).index();
+
+
+	$(".site-box-button").removeClass('active');
+	$(".site-box-button." +opt_index_group ).addClass('active');
+
+	 if (box_index_group == 1)
+	 {
+		 langStatus = "heb";
+		 if(contactCheackH)
+		 {
+			 $("#contactUs").css("display", "none");
+			 $("#media-cont").css("display", "block");
+			 contactCheackH = false;
+		 }
+
+		 if(contactCheackE)
+		 {
+			 $("#contactUsEng").css("display", "none");
+			 $("#media-cont").css("display", "block");
+			 contactCheackE = false;
+		 }
+		 $DataHeb = helloObj.data.heb;
+		 initMenu();
+
+		 $(".product-box").removeClass('boxHover');
+		 $(".product-box:last-child").addClass('boxHover');
+
+
+		 $("#products-group").css("display", "none");
+		 $("#products").css("display", "inline-block");
+		 $(".option-box").css("visibility", "hidden");
+		 $("#media-cont #content").css("display", "none");
+		 contentStatus = false;
+		 $(".option-box .text-option").removeClass('intro');
+		 $("#presentation").fadeIn(550).css("display", "block");
+		 $(".inter-mc").removeClass('eng-cont');
+		 $("#heb").html('הארץ');
+		 $("#contact").html('צור קשר');
+		 $("#group").html('קבוצת הארץ');
+		 $(".inter-video-container .inter-video").attr("src", "https://www.youtube.com/embed/g2CQdbSOQOQ");
+	 }
+
+
+	if (box_index_group == 2) {
+		langStatus = "heb";
+		if(contactCheackH)
+		{
+			$("#contactUs").css("display", "none");
+			$("#media-cont").css("display", "block");
+			contactCheackH = false;
+		}
+
+		if(contactCheackE)
+		{
+			$("#contactUsEng").css("display", "none");
+			$("#media-cont").css("display", "block");
+			contactCheackE = false;
+		}
+		$DataHeb = helloObj.data.mar;
+		initMenu();
+		$(".option-box").css("visibility", "hidden");
+		$("#media-cont #content").css("display", "none");
+		$("#products-group").css("display", "none");
+		$("#products").css("display", "inline-block");
+		contentStatus = false;
+		$(".option-box .text-option").removeClass('intro');
+		$("#presentation").fadeIn(550).css("display", "block");
+		$(".inter-mc").removeClass('eng-cont');
+		$("#heb").html('הארץ');
+		$("#contact").html('צור קשר');
+		$("#group").html('קבוצת הארץ');
+		$(".inter-video-container .inter-video").attr("src", "https://www.youtube.com/embed/2KEJ28oAwk8");
+	}
+
+	if (box_index_group == 3) {
+		langStatus = "eng";
+		if(contactCheackH)
+		{
+			$("#contactUs").css("display", "none");
+			$("#media-cont").css("display", "block");
+			contactCheackH = false;
+		}
+
+		if(contactCheackE)
+		{
+			$("#contactUsEng").css("display", "none");
+			$("#media-cont").css("display", "block");
+			contactCheackE = false;
+		}
+
+
+		$("#contactUs").fadeIn(550).css("display", "none");
+		$DataHeb = helloObj.data.eng;
+		initMenu();
+		$(".inter-mc").addClass('eng-cont');
+		$(".option-box").css("visibility", "hidden");
+		$("#media-cont #content").css("display", "none");
+		contentStatus = false;
+		$("#presentation").fadeIn(550).css("display", "block");
+		$(".option-box .text-option").removeClass('intro');
+		$("#products-group").css("display", "none");
+		$("#products").css("display", "inline-block");
+		$("#heb").html('Haaretz.co.il');
+		$("#contact").html('Contact Us');
+		$("#group").html('Haaretz Group');
+		$(".inter-video-container .inter-video").attr("src", "https://www.youtube.com/embed/NuOHF1P3hTw");
+	}
+
+	if (box_index_group == 4) {
+		langStatus = "heb";
+		if(contactCheackH)
+		{
+			$("#contactUs").css("display", "none");
+			$("#media-cont").css("display", "block");
+			contactCheackH = false;
+		}
+
+		if(contactCheackE)
+		{
+			$("#contactUsEng").css("display", "none");
+			$("#media-cont").css("display", "block");
+			contactCheackE = false;
+		}
+		$DataHeb = helloObj.data.fin;
+		initMenu();
+		$("#products-group").css("display", "none");
+		$("#products").css("display", "inline-block");
+		$(".option-box").css("visibility", "hidden");
+		$("#media-cont #content").css("display", "none");
+		contentStatus = false;
+		$(".option-box .text-option").removeClass('intro');
+		$("#presentation").fadeIn(550).css("display", "block");
+		$(".inter-mc").removeClass('eng-cont');
+		$("#heb").html('הארץ');
+		$("#contact").html('צור קשר');
+		$("#group").html('קבוצת הארץ');
+		$(".inter-video-container .inter-video").attr("src", "https://www.youtube.com/embed/2KEJ28oAwk8");
+	}
+
+});*/
+
+//--------------------------------------------------------------//
+//  Show the submenu of every ckicking menu row and hide youtube
+//--------------------------------------------------------------//
+
+
+/*$(document).on("mouseout", ".product-box", function (e) {
+	closeMouseOver = false;
+	setTimeout(function(){
+		closeMouseOver = true;
+
+	}, 400);
+
+
+});
+*/
+
+// $(document).on("mouseover", ".product-box", function (e) {
+// 	$(".product-box").removeClass('boxHover');
+// 	$(this).addClass('boxHover');
+// });
+
+
+	$(document).on("click", ".product-box", function (e) {
+
+	   $("#media-cont #content").css("display", "none");
+	   contentStatus = false;
+	   $(".product-box").removeClass('boxHover');
+	   $(this).addClass('boxHover');
+	   var box_index = $(this).index();
+	   tabKey = "pro" + (box_index);
+
+	   if (box_index == 0) {
+		   if(isPlay){
+			   inter_players["tVTj5YBzW5Q"].playVideo();
+		   }
+		   $(".option-box").css("visibility", "hidden");
+		   return;
+	   }
+	   else {
+
+		   //$("#presentation").fadeOut(500);
+		   $(".option-box").css("visibility", "visible");
+	   }
+
+	   for (var i = 0; i < $DataHeb[tabKey].length; i++) {
+
+		   // if (i == 0) {
+			//    if (tabKey == "pro8" || tabKey == "pro9")
+			//    {
+			// 	   strOption += "<div aria-label='" + $DataHeb[tabKey][i].name + "' data-tab='" + tabKey + "' data-options='" + i + "' class='text-option intro-np'>" + $DataHeb[tabKey][i].name + "</div>";
+			// 	   i++;
+			//    }
+			//    else
+			//    {
+			// 	   strOption += "<div aria-label='" + $DataHeb[tabKey][i].name + "' data-tab='" + tabKey + "' data-options='" + i + "' class='text-option'>" + $DataHeb[tabKey][i].name + "</div>";
+			// 	   i++;
+			//    }
+		   // }
+
+
+		   strOption += "<div aria-label='" + $DataHeb[tabKey][i].name + "' data-tab='" + tabKey + "' data-options='" + i + "' class='text-option eng'>" + $DataHeb[tabKey][i].name + "</div>";
+	   }
+	   $(".option-box").html(strOption);
+	   //$("#presentation").fadeOut(500);
+
+	    $(".option-box").css("visibility", "visible");
+	      strOption = "";
+
+		var n =1;
+
+		$(".text-option").each(function (n) { $(this).attr('tabindex', n + 1); });
+
+	});
+
+
+//---------------------  EVENTS  -------------------------------//
+//       Play the main youtube of every site
+//--------------------------------------------------------------//
+
+	$(document).on("click", ".product-box:first-child", function (event) {
+
+		event.stopPropagation();
+		$(".option-box").css("visibility", "hidden");
+		$("#media-cont #content").css("display", "none");
+		$("#presentation").fadeIn(550).css("display", "block");
+		contentStatus = false;
+		$(".option-box .text-option").removeClass('intro');
+	});
+
+
+//--------------------------------------------------------------//
+//       Change the site buttons on Header
+//--------------------------------------------------------------//
+//$(".site-box-button").click(function () {
+
+/*
+	$(document).on("click", ".site-box-button", function (event) {
+
+		event.stopPropagation();
+		$(".site-box-button").removeClass('active');
+		$(this).addClass('active');
+
+		siteCheck = $(this).data("site");
+
+
+		if (siteCheck == "group") {
+
+			$("#products-group").css("display", "block");
+			$("#products").css("display", "none");
+		}
+
+
+		if (siteCheck == "con") {
+               if(langStatus == "heb")
+               {
+	            $("#contactUs").fadeIn(550).css("display", "block");
+	            $("#media-cont").fadeIn(550).css("display", "none");
+	               contactCheackH = true;
+               }
+			   else
+               {
+	            $("#contactUsEng").fadeIn(550).css("display", "block");
+	            $("#media-cont").fadeIn(550).css("display", "none");
+	               contactCheackE = true;
+               }
+
+		}
+
+
+		if (siteCheck == "eng") {
+			langStatus = "eng";
+			 if(contactCheackH)
+			 {
+				 $("#contactUs").css("display", "none");
+				 $("#media-cont").css("display", "block");
+				 contactCheackH = false;
+			 }
+
+			if(contactCheackE)
+			{
+				$("#contactUsEng").css("display", "none");
+				$("#media-cont").css("display", "block");
+				contactCheackE = false;
+			}
+
+
+			$("#contactUs").fadeIn(550).css("display", "none");
+			$DataHeb = helloObj.data.eng;
+			initMenu();
+			$(".inter-mc").addClass('eng-cont');
+			$(".option-box").css("visibility", "hidden");
+			$("#media-cont #content").css("display", "none");
+			contentStatus = false;
+			$("#presentation").fadeIn(550).css("display", "block");
+			$(".option-box .text-option").removeClass('intro');
+			$("#products-group").css("display", "none");
+			$("#products").css("display", "inline-block");
+			$("#heb").html('Haaretz.co.il');
+			$("#contact").html('Contact Us');
+			$("#group").html('Haaretz Group');
+			$(".inter-video-container .inter-video").attr("src", "https://www.youtube.com/embed/NuOHF1P3hTw");
+
+		}
+
+
+		if (siteCheck == "heb") {
+			langStatus = "heb";
+			if(contactCheackH)
+			{
+				$("#contactUs").css("display", "none");
+				$("#media-cont").css("display", "block");
+				contactCheackH = false;
+			}
+
+			if(contactCheackE)
+			{
+				$("#contactUsEng").css("display", "none");
+				$("#media-cont").css("display", "block");
+				contactCheackE = false;
+			}
+
+			$("#products-group").css("display", "none");
+			$("#products").css("display", "inline-block");
+
+
+			$DataHeb = helloObj.data.heb;
+			initMenu();
+			$(".option-box").css("visibility", "hidden");
+			$("#media-cont #content").css("display", "none");
+			contentStatus = false;
+			$(".option-box .text-option").removeClass('intro');
+			$("#presentation").fadeIn(550).css("display", "block");
+			$(".inter-mc").removeClass('eng-cont');
+			$("#heb").html('הארץ');
+			$("#contact").html('צור קשר');
+			$("#group").html('קבוצת הארץ');
+			$(".inter-video-container .inter-video").attr("src", "https://www.youtube.com/embed/g2CQdbSOQOQ");
+		}
+
+		if (siteCheck == "mar") {
+			langStatus = "heb";
+			if(contactCheackH)
+			{
+				$("#contactUs").css("display", "none");
+				$("#media-cont").css("display", "block");
+				contactCheackH = false;
+			}
+
+			if(contactCheackE)
+			{
+				$("#contactUsEng").css("display", "none");
+				$("#media-cont").css("display", "block");
+				contactCheackE = false;
+			}
+			$DataHeb = helloObj.data.mar;
+			initMenu();
+			$(".option-box").css("visibility", "hidden");
+			$("#media-cont #content").css("display", "none");
+			$("#products-group").css("display", "none");
+			$("#products").css("display", "inline-block");
+			contentStatus = false;
+			$(".option-box .text-option").removeClass('intro');
+			$("#presentation").fadeIn(550).css("display", "block");
+			$(".inter-mc").removeClass('eng-cont');
+			$("#heb").html('הארץ');
+			$("#contact").html('צור קשר');
+			$("#group").html('קבוצת הארץ');
+			$(".inter-video-container .inter-video").attr("src", "https://www.youtube.com/embed/2KEJ28oAwk8");
+
+		}
+
+
+		if (siteCheck == "fin") {
+			langStatus = "heb";
+			if(contactCheackH)
+			{
+				$("#contactUs").css("display", "none");
+				$("#media-cont").css("display", "block");
+				contactCheackH = false;
+			}
+
+			if(contactCheackE)
+			{
+				$("#contactUsEng").css("display", "none");
+				$("#media-cont").css("display", "block");
+				contactCheackE = false;
+			}
+			$DataHeb = helloObj.data.fin;
+			initMenu();
+			$("#products-group").css("display", "none");
+			$("#products").css("display", "inline-block");
+			$(".option-box").css("visibility", "hidden");
+			$("#media-cont #content").css("display", "none");
+			contentStatus = false;
+			$(".option-box .text-option").removeClass('intro');
+			$("#presentation").fadeIn(550).css("display", "block");
+			$(".inter-mc").removeClass('eng-cont');
+			$("#heb").html('הארץ');
+			$("#contact").html('צור קשר');
+			$("#group").html('קבוצת הארץ');
+			$(".inter-video-container .inter-video").attr("src", "https://www.youtube.com/embed/2KEJ28oAwk8");
+
+		}
+	});*/
+
+
+
+
+
+
+
+//--------------------------------------------------------------//
+//       Show And Replace Content Details
+//--------------------------------------------------------------//
+
+	$(document).click(".text-option", function (e) {
+		if(isPlay){
+			inter_players["tVTj5YBzW5Q"].pauseVideo();
+		}
+		e.stopPropagation();
+		var opt_index = $(e.target).attr('data-options');
+
+
+
+		$("#presentation").fadeOut(500);
+
+
+		// if (opt_index == 0 && tabKey == "pro8" || opt_index == 0 && tabKey == "pro9")
+		// {
+		// 	$(".text-option").removeClass('intro-eng');
+		// 	$(e.target).addClass('intro-np');
+		// }
+		// else {
+		//
+		// 	$(".text-option").removeClass('intro-eng');
+		// 	$(e.target).addClass('intro-eng');
+		// }
+
+
+
+
+		if (!contentStatus) {
+			$("#media-cont #content").fadeIn(500).css("display", "block");
+			contentStatus = true;
+		}
+
+		$(".prod-title-eng").html($DataHeb[tabKey][opt_index].title);
+		$(".prod-details .details").html($DataHeb[tabKey][opt_index].details);
+
+
+		if ($DataHeb[tabKey][opt_index].size == null) {
+			$(".divSize").html("");
+		        }
+
+		else
+		{
+			$(".divSize").html("<span>size: </span><span class='size'></span>");
+			$(".prod-details .size").html($DataHeb[tabKey][opt_index].size);
+		}
+
+
+		if ($DataHeb[tabKey][opt_index].url == null) {
+			$(".close").html("");
+		}
+
+		else
+		{
+			$(".close").html("<a id='closeUrl' href='#'>הוראות סגירה</a>");
+			$("a#closeUrl").attr("href", "//www.themarker.com/st/c/prod/global/mediaKit/close.html#" + $DataHeb[tabKey][opt_index].url);
+		}
+
+
+
+		if ($DataHeb[tabKey][opt_index].img == null) {
+			$(".img-content").css("display","none");
+			$("#media-cont #content .text-content").css("width", "100%");
+			$("#imgDetails").empty();
+		}
+		else {
+			$(".img-content").css("display","inline-block");
+			$("#media-cont #content .text-content").css("width", "30%");
+			var newImg = "//www.haaretz.co.il/st/c/static/global/media/haaretzCom/" + $DataHeb[tabKey][opt_index].img;
+			$(".img-content img").attr("src", newImg);
+		}
+
+
+
+
+		if ( $(".text-content").height() > 391 && $DataHeb[tabKey][opt_index].img != null)
+		{
+			$(".img-content").css("display","none");
+			$("#media-cont #content .text-content").css("width", "100%");
+			$("#media-cont #content .text-content").css("float", "left");
+			var strimg = "<img src='"+ newImg +"'>";
+			$( strimg ).appendTo( ".prod-details #imgDetails" );
+
+		}
+		else if ( $(".text-content").height() < 391 && $DataHeb[tabKey][opt_index].img != null)
+		{
+			$(".img-content").css("display","inline-block");
+			$("#media-cont #content .text-content").css("width", "30%");
+			$("#media-cont #content .text-content").css("float", "none");
+			$("#imgDetails").empty();
+		}
+	});
+
+
+$(document).bind("keypress", ".text-option", function (e) {
+	if(event.keyCode == 13){
+		$(e.target).click();
+	}
+});
+
+
+	$(document).on("click", ".product-box", function (e) {
+		e.stopPropagation();
+	});
+
+
+
+$(document).on("click", "#media-cont #content .text-content", function (e) {
+	e.stopPropagation();
+});
+
+$(document).on("click", "#contactUs #contact-text", function (e) {
+	e.stopPropagation();
+});
+
+$(document).on("click", "#contactUsEng #contact-text-eng", function (e) {
+	e.stopPropagation();
+});
+
+
+//--------------------------------------------------------------//
+//       Form Validation
+//--------------------------------------------------------------//
+
+function FormValidation() {
+	//Validate Field 1
+	if (firstName.value == "") {
+		alert("נא למלא שם      ");
+		firstName.focus();
+		return false;
+	}
+	if (lastName.value == "") {
+		alert("נא למלא שם משפחה");
+		lastName.focus();
+		return false;
+	}
+
+	if (phone2.value.length < 7) {
+		alert("נא למלא 7 ספרות")
+		phone2.focus();
+		return false;
+	}
+
+	var firstmonber = selectNo.options[selectNo.selectedIndex].value;
+	if (firstmonber == "בחר"){
+		alert("נא לבחור קידומת");
+		selectNo.focus();
+		return false;
+	}
+
+
+	var emailRegEx = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+	if (!(email.value.search(emailRegEx) != -1) && (email.value.length < 64)) {
+		alert("נא למלא כתובת מייל תקינה");
+		email.focus();
+		return false;
+	}
+	var str1 = firstName.value + " ";
+	var str2 = lastName.value;
+	var res = str1.concat(str2);
+	fullName.value = res;
+
+
+	var fullPhone = (firstmonber + phone2.value);
+	phone.value = fullPhone;
+
+
+
+
+
+}
+
+
+
+//--------------------------------------------------------------//
+//       Form Validation Eng
+//--------------------------------------------------------------//
+
+function FormValidationEng() {
+
+	if (firstNameEng.value == "") {
+		alert("Enter your first name");
+		firstNameEng.focus();
+		return false;
+	}
+	if (lastNameEng.value == "") {
+		alert("Enter your Last name");
+		lastNameEng.focus();
+		return false;
+	}
+
+	var str1 = firstNameEng.value + " ";
+	var str2 = lastNameEng.value;
+	var res = str1.concat(str2);
+	fullName.value = res;
+
+
+	if (phone.value.length < 7) {
+		alert("Enter 7 numbers");
+		phone.focus();
+		return false;
+	}
+
+
+	var emailRegEx = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+	if (!(emailEng.value.search(emailRegEx) != -1) && (email.value.length < 64)) {
+		alert("Incorrect email");
+		emailEng.focus();
+		return false;
+	}
+
+}
+
+
+function backToMainEng() {
+	window.location.assign("//www.haaretz.com/st/c/prod/global/mediaKit/haaretzEng.html");
+}
+
+
+
+$(document).on("click", "#contactH", function (event) {
+	if(isPlay){inter_players["tVTj5YBzW5Q"].pauseVideo();}
+	event.stopPropagation();
+	$(".site-box-button").removeClass('active');
+	$(this).addClass('active');
+
+
+	$("#products-group").css("display", "none");
+	$("#products").css("display", "none");
+
+	$("#contactUs").fadeIn(550).css("display", "block");
+	$("#media-cont").fadeIn(550).css("display", "none");
+	$("#contactH").css("color", "black");
+
+	$("#contactH").css("padding", "0 15px");
+
+
+});
+
+$(document).on("click", "#contactE", function (event) {
+	if(isPlay){inter_players["tVTj5YBzW5Q"].pauseVideo();}
+	event.stopPropagation();
+	$(".site-box-button").removeClass('active');
+	$(this).addClass('active');
+
+
+	$("#products-group").css("display", "none");
+	$("#products").css("display", "none");
+
+	$("#contactUsEng").fadeIn(550).css("display", "block");
+	$("#media-cont").fadeIn(550).css("display", "none");
+	$("#contactE").css("color", "black");
+
+	$("#contactE").css("padding", "0 15px");
+
+
+});
+
+
+
+// 2. This code loads the IFrame Player API code asynchronously.
+var tag = document.createElement('script');
+tag.src = "//www.youtube.com/player_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+// 3. This function creates an <iframe> (and YouTube player)
+//    after the API code downloads.
+
+
+// function onYouTubePlayerAPIReady() {
+// 	player = new YT.Player('presentation', {
+//
+// 		playerVars: {
+// 			'autoplay': 0,
+// 			'controls': 0,
+// 			'mute': 0,
+// 			'volume': 0,
+// 			'rel' : 0
+// 		},
+//
+// 		videoId: 'dyx3DbDjLas'
+// 	});
+//
+//
+// }
+

@@ -1,0 +1,5 @@
+# HTTrack Website Copier Cookie File
+# This file format is compatible with Netscape cookies
+.haaretz.com	TRUE	/	FALSE	1999999999	anonymousId	17683497231243
+.haaretz.com	TRUE	/	FALSE	1999999999	ab-test-group	B
+
